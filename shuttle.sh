@@ -237,7 +237,7 @@ case $DISTRO in
         sudo apt update >/dev/null 2>&1
         print_success "Repositories configured"
         
-        if run_with_spinner "Upgrading system and installing base packages..." bash -c "sudo apt update && sudo apt full-upgrade -y && sudo apt install build-essential pipx ansible zsh nala file lsd fzf git lazygit wget curl bat btop cifs-utils tar unzip unrar unar unace bzip2 xz-utils 7zip fastfetch -y"; then
+        if run_with_spinner "Upgrading system and installing base packages..." bash -c "sudo apt update && sudo apt full-upgrade -y && sudo apt install build-essential pipx ansible zsh zoxide nala file lsd fzf git lazygit wget curl bat btop cifs-utils tar unzip unrar unar unace bzip2 xz-utils 7zip fastfetch -y"; then
             print_success "System upgraded and base packages installed"
         else
             print_error "Failed to upgrade system and install base packages"
@@ -270,7 +270,7 @@ case $DISTRO in
         ;;
         
     arch)
-        if run_with_spinner "Updating system and installing base packages..." bash -c "sudo pacman -Syu --noconfirm base-devel python-pipx git wget curl zsh file lsd fzf github-cli lazygit bat btop cifs-utils tar unzip unrar unace bzip2 xz p7zip fastfetch which"; then
+        if run_with_spinner "Updating system and installing base packages..." bash -c "sudo pacman -Syu --noconfirm base-devel python-pipx git wget curl zsh zoxide file lsd fzf github-cli lazygit bat btop cifs-utils tar unzip unrar unace bzip2 xz p7zip fastfetch which"; then
             print_success "System updated and base packages installed"
         else
             print_error "Failed to update system and install base packages"

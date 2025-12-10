@@ -28,41 +28,40 @@ chmod +x shuttle.sh \
 - **Passwordless sudo**: Autodetects group (wheel or sudo) to configure passwordless privilege elevation
 
 ### Base Packages
-- **Shell**: zsh (along with my .zshrc config with zinit, starship, atuin, and [aliases](#zsh-aliases))
+- **Shell**: zsh with [my .zshrc](https://github.com/chriscorbell/dotfiles/blob/main/.zshrc) which includes zinit with starship, atuin, syntax highlighting, completions, autosuggestions, fzf-tab, OMZ snippets, [aliases](#zsh-aliases) and [functions](#zsh-functions)
 - **Development**: base build tools, wget, curl
-- **Utilities**: pipx, lsd, fzf, bat, btop, fastfetch
+- **Utilities**: pipx, lsd, fzf, zoxide, bat, btop, fastfetch
 - **Archive tools**: tar, unzip, unrar, unar, unace, bzip2, xz, 7zip (for [pack](#pack) and [extract](#extract) zsh functions)
-
-### Additional Tools
 - **Git, GitHub CLI and lazygit**
 - **Docker, Docker Compose and lazydocker**
 - **Terraform**
 - **Ansible**
 
-### Distribution-Specific
+### Distribution-Specific:
 
-**Debian:**
+Debian:
 - Enables non-free and contrib repositories
 - Installs nala frontend for apt
 
-**Arch:**
+Arch:
 - Installs yay AUR helper
 
 ## Post-Installation
 
 After the script completes:
 
-1. **Log out and log back in** for all changes to take effect (especially group memberships)
+1. **Log out and log back in** for all changes to take effect
 2. Your default shell will be zsh with custom configuration
-3. Docker will be enabled and ready to use (no sudo required)
-4. All installations are logged to `/tmp/shuttle-install-YYYYMMDD-HHMMSS.log`
+3. Docker will be enabled and ready to use with your current non-root user (no sudo required)
+4. Installations are logged to `/tmp/shuttle-install-YYYYMMDD-HHMMSS.log`
 
 ## Customization
 
-To use your own dotfiles repository, modify the clone command in the script:
+To use your own dotfiles repository, modify the clone command in the script with:
 ```bash
-git clone https://github.com/your-username/dotfiles /tmp/dotfiles
+git clone https://github.com/your-username/your-dotfiles /tmp/dotfiles
 ```
+Your dotfiles repo needs to contain a `.zshrc` file and a `.config` directory.
 
 ## ZSH Aliases
 
@@ -70,6 +69,7 @@ The following aliases are configured in the `.zshrc` file:
 
 | Alias | Command | Description |
 |-------|---------|-------------|
+| `cd` | `z` | Replace cd with zoxide |
 | `ls` | `lsd -alh --color=always` | List all files and directories with human-readable sizes, colors and icons |
 | `grep` | `grep --color=auto` | Colorized grep output |
 | `gs` | `git status` | Show git working tree status |

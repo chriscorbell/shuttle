@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://i.imgur.com/E7QQ18h.png?raw=true" width="400" alt="shuttle"><br><br>
-  A streamlined setup script that automatically configures a fresh installation<br>with essential development tools and server-focused packages.<br>
+  shuttle is a streamlined setup script that automatically configures a fresh installation<br>with essential development tools and server-focused packages.<br>
   <br>
   <b>Supports Debian and Arch Linux.</b>
 </div>
@@ -29,13 +29,13 @@ chmod +x shuttle.sh \
 
 ### Base Packages
 - **Shell**: zsh (along with my .zshrc config with zinit, starship, atuin, and [aliases](#zsh-aliases))
-- **Development**: git, base build tools, wget, curl
+- **Development**: base build tools, wget, curl
 - **Utilities**: pipx, lsd, fzf, bat, btop, fastfetch
-- **Archive tools**: tar, unzip, unrar, unar, unace, bzip2, xz, 7zip
+- **Archive tools**: tar, unzip, unrar, unar, unace, bzip2, xz, 7zip (for [pack](#pack) and [extract](#extract) zsh functions)
 
 ### Additional Tools
-- **GitHub CLI**: For seamless GitHub integration
-- **Docker**: With docker-compose and buildx plugins
+- **Git, GitHub CLI and lazygit**
+- **Docker, Docker Compose and lazydocker**
 - **Terraform**
 - **Ansible**
 
@@ -84,7 +84,7 @@ The following aliases are configured in the `.zshrc` file:
 
 Custom functions included in the `.zshrc` file:
 
-### `gacp <commit message>`
+### gacp
 Git add, commit, and push in one command. Automatically pushes to the current branch.
 
 **Example:**
@@ -92,7 +92,7 @@ Git add, commit, and push in one command. Automatically pushes to the current br
 gacp "Fixed bug in authentication"
 ```
 
-### `extract <filename>`
+### extract
 Universal extraction function that automatically detects archive type and extracts accordingly. Uses multi-threaded XZ extraction for faster decompression.
 
 **Supported formats:**
@@ -113,7 +113,7 @@ Universal extraction function that automatically detects archive type and extrac
 extract myfile.tar.gz
 ```
 
-### `pack <format> <file/directory>`
+### pack
 Create archives in various formats from files or directories.
 
 **Supported formats:**

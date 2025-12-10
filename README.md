@@ -25,12 +25,12 @@ curl https://raw.githubusercontent.com/chriscorbell/shuttle/main/shuttle.sh | ba
 - **Passwordless sudo**: Autodetects group (wheel or sudo) to configure passwordless privilege elevation
 
 ### Base Packages
-- **Shell**: zsh with [my .zshrc](https://github.com/chriscorbell/dotfiles/blob/main/.zshrc) which includes zinit with starship, atuin, syntax highlighting, completions, autosuggestions, fzf-tab, OMZ snippets, [aliases](#zsh-aliases) and [functions](#zsh-functions)
+- **Shell**: zsh with [my .zshrc](https://github.com/chriscorbell/dotfiles/blob/main/.zshrc) which includes [zinit](https://github.com/zdharma-continuum/zinit) with [starship](https://github.com/starship/starship), [atuin](https://github.com/atuinsh/atuin), syntax highlighting, completions, autosuggestions, fzf-tab, OMZ snippets, [aliases](#zsh-aliases) and [functions](#zsh-functions)
 - **Development**: base build tools, wget, curl
-- **Utilities**: pipx, lsd, fzf, zoxide, bat, btop, fastfetch
+- **Utilities**: pipx, [lsd](https://github.com/lsd-rs/lsd), fzf, zoxide, bat, btop, fastfetch
 - **Archive tools**: tar, unzip, unrar, unar, unace, bzip2, xz, 7zip (for [pack](#pack) and [extract](#extract) zsh functions)
-- **Git, GitHub CLI and lazygit**
-- **Docker, Docker Compose and lazydocker**
+- **Git, GitHub CLI and [lazygit](https://github.com/jesseduffield/lazygit)**
+- **Docker, Docker Compose and [lazydocker](https://github.com/jesseduffield/lazydocker)**
 - **Terraform**
 - **Ansible**
 

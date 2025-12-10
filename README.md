@@ -14,6 +14,10 @@ cd shuttle
 chmod +x shuttle.sh
 ./shuttle.sh
 ```
+Or alternatively, curl-pipe into bash (don't forget to always read and verify the source before doing so):
+```
+curl https://raw.githubusercontent.com/chriscorbell/shuttle/main/shuttle.sh | bash
+```
 
 ## What it Installs
 

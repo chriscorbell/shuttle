@@ -237,7 +237,7 @@ case $DISTRO in
         sudo apt update >/dev/null 2>&1
         print_success "Repositories configured"
         
-        if run_with_spinner "Upgrading system and installing base packages..." bash -c "sudo apt update && sudo apt full-upgrade -y && sudo apt install build-essential pipx ansible zsh zoxide nala file lsd fzf git lazygit wget curl bat btop cifs-utils tar unzip unrar unar unace bzip2 xz-utils 7zip fastfetch -y"; then
+        if run_with_spinner "Upgrading system and installing base packages..." bash -c "sudo apt update && sudo apt full-upgrade -y && sudo apt install build-essential gnupg2 pipx ansible zsh zoxide nala file lsd fzf git lazygit wget curl bat btop cifs-utils tar unzip unrar unar unace bzip2 xz-utils 7zip fastfetch -y"; then
             print_success "System upgraded and base packages installed"
         else
             print_error "Failed to upgrade system and install base packages"

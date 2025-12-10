@@ -6,13 +6,6 @@
 </div>
 <br>
 
-## Prerequisites
-
-- Fresh Debian or Arch installation
-- sudo privileges
-- User in wheel or sudo group
-- Internet connection
-
 ## Instructions
 
 ```bash

@@ -70,7 +70,7 @@ The following aliases are configured in the `.zshrc` file:
 
 | Alias | Command | Description |
 |-------|---------|-------------|
-| `ls` | `ls -alh --color=always` | List all files with human-readable sizes and colors |
+| `ls` | `lsd -alh --color=always` | List all files and directories with human-readable sizes, colors and icons |
 | `grep` | `grep --color=auto` | Colorized grep output |
 | `gs` | `git status` | Show git working tree status |
 | `ga` | `git add .` | Stage all changes |

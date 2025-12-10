@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://i.imgur.com/E7QQ18h.png?raw=true" width="400" alt="shuttle"><br><br>
-  shuttle is a streamlined setup script that automatically configures a fresh installation<br>with shell enhancements, essential development tools and server-focused packages.<br>
+  shuttle is a streamlined setup script that automatically configures a fresh installation with shell enhancements, essential development tools and server-focused packages.<br>
   <br>
   <b>Supports Debian and Arch Linux.</b>
 </div>

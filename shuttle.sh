@@ -275,7 +275,7 @@ case $DISTRO in
         sudo sed -i 's/^#VerbosePkgLists$/VerbosePkgLists/' /etc/pacman.conf 2>/dev/null
         sudo sed -i 's/^#ParallelDownloads = 5$/ParallelDownloads = 10/' /etc/pacman.conf 2>/dev/null
         sudo sed -i 's/^ParallelDownloads = 5$/ParallelDownloads = 10/' /etc/pacman.conf 2>/dev/null
-        if ! grep -q "^ILoveCandy" /etc/pacman.conf; then
+        if ! grep -q "^ILoveCandy" /etc/pacman.conf && grep -q "^VerbosePkgLists" /etc/pacman.conf; then
             sudo sed -i '/^VerbosePkgLists/a ILoveCandy' /etc/pacman.conf 2>/dev/null
         fi
         print_success "Pacman configured"
@@ -286,14 +286,13 @@ case $DISTRO in
             print_error "Failed to install reflector"
         fi
         
-        print_step "Updating mirrorlist with reflector..."
         COUNTRY_CODE=$(locale | grep -oP '^LC_TIME=.*_\K[A-Z]{2}' | head -1)
         if [ -z "$COUNTRY_CODE" ]; then
             COUNTRY_CODE=$(locale | grep -oP '^LANG=.*_\K[A-Z]{2}' | head -1)
         fi
         COUNTRY_CODE=${COUNTRY_CODE:-US}
-        echo -e "${YELLOW}Detected country: $COUNTRY_CODE${NOCOLOR}"
-        if sudo reflector --country "$COUNTRY_CODE" --score 20 --sort rate --save /etc/pacman.d/mirrorlist; then
+
+        if run_with_spinner "Updating mirrorlist with reflector..." bash -c "sudo reflector --country '$COUNTRY_CODE' --score 20 --sort rate --save /etc/pacman.d/mirrorlist"; then
             print_success "Mirrorlist updated"
         else
             print_error "Failed to update mirrorlist"
@@ -325,7 +324,7 @@ case $DISTRO in
         ;;
 esac
 
-if run_with_spinner "Cloning and installing dotfiles..." bash -c "git clone https://github.com/chriscorbell/dotfiles /tmp/dotfiles && cp -r /tmp/dotfiles/.config $HOME/ && cp /tmp/dotfiles/.zshrc $HOME/"; then
+if run_with_spinner "Cloning and installing dotfiles..." bash -c "rm -rf /tmp/dotfiles && git clone https://github.com/chriscorbell/dotfiles /tmp/dotfiles && cp -r /tmp/dotfiles/.config \$HOME/ && cp /tmp/dotfiles/.zshrc \$HOME/"; then
     print_success "Dotfiles installed"
 else
     print_error "Failed to clone and install dotfiles"
@@ -344,14 +343,17 @@ if [ -x "$ZSH_PATH" ]; then
         fi
         
         if [ -n "$PAM_GROUP" ]; then
-            if ! grep -q "pam_wheel.so trust group=$PAM_GROUP" /etc/pam.d/chsh 2>/dev/null; then
+            if ! grep -q "pam_wheel.so trust" /etc/pam.d/chsh 2>/dev/null; then
                 # Add the pam_wheel.so line at the beginning of the auth section
                 sudo sed -i "1i auth    sufficient  pam_wheel.so trust group=$PAM_GROUP" /etc/pam.d/chsh 2>/dev/null
             fi
         fi
     fi
     
-    if chsh -s "$ZSH_PATH" >/dev/null 2>&1; then
+    CURRENT_SHELL=$(getent passwd "$USER" | cut -d: -f7)
+    if [ "$CURRENT_SHELL" = "$ZSH_PATH" ]; then
+        print_success "Default shell is already ZSH"
+    elif chsh -s "$ZSH_PATH" >/dev/null 2>&1; then
         print_success "Default shell changed to ZSH"
     else
         print_error "Failed to change default shell"

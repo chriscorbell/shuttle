@@ -237,7 +237,7 @@ case $DISTRO in
         sudo apt update >/dev/null 2>&1
         print_success "Repositories configured"
         
-        if run_with_spinner "Upgrading system and installing base packages..." bash -c "sudo apt update && sudo apt full-upgrade -y && sudo apt install build-essential gnupg2 pipx ansible zsh zoxide nala file lsd fzf git lazygit wget curl bat btop cifs-utils tar unzip unrar unar unace bzip2 xz-utils 7zip fastfetch -y"; then
+        if run_with_spinner "Upgrading system and installing base packages..." bash -c "sudo apt update && sudo apt full-upgrade -y && sudo apt install build-essential jq ripgrep gnupg2 pipx ansible zsh dysk zoxide fastfetch nala file lsd fzf git lazygit wget curl bat btop ffmpeg cifs-utils tar unzip unrar unar unace bzip2 xz-utils 7zip which -y"; then
             print_success "System upgraded and base packages installed"
         else
             print_error "Failed to upgrade system and install base packages"
@@ -270,7 +270,36 @@ case $DISTRO in
         ;;
         
     arch)
-        if run_with_spinner "Updating system and installing base packages..." bash -c "sudo pacman -Syu --noconfirm base-devel python-pipx git wget curl zsh zoxide file lsd fzf github-cli lazygit bat btop cifs-utils tar unzip unrar unace bzip2 xz p7zip fastfetch which"; then
+        print_step "Configuring pacman..."
+        sudo sed -i 's/^#Color$/Color/' /etc/pacman.conf 2>/dev/null
+        sudo sed -i 's/^#VerbosePkgLists$/VerbosePkgLists/' /etc/pacman.conf 2>/dev/null
+        sudo sed -i 's/^#ParallelDownloads = 5$/ParallelDownloads = 10/' /etc/pacman.conf 2>/dev/null
+        sudo sed -i 's/^ParallelDownloads = 5$/ParallelDownloads = 10/' /etc/pacman.conf 2>/dev/null
+        if ! grep -q "^ILoveCandy" /etc/pacman.conf; then
+            sudo sed -i '/^VerbosePkgLists/a ILoveCandy' /etc/pacman.conf 2>/dev/null
+        fi
+        print_success "Pacman configured"
+        
+        if run_with_spinner "Installing reflector..." bash -c "sudo pacman -Sy --needed --noconfirm reflector rsync"; then
+            print_success "Reflector installed"
+        else
+            print_error "Failed to install reflector"
+        fi
+        
+        print_step "Updating mirrorlist with reflector..."
+        COUNTRY_CODE=$(locale | grep -oP '^LC_TIME=.*_\K[A-Z]{2}' | head -1)
+        if [ -z "$COUNTRY_CODE" ]; then
+            COUNTRY_CODE=$(locale | grep -oP '^LANG=.*_\K[A-Z]{2}' | head -1)
+        fi
+        COUNTRY_CODE=${COUNTRY_CODE:-US}
+        echo -e "${YELLOW}Detected country: $COUNTRY_CODE${NOCOLOR}"
+        if sudo reflector --country "$COUNTRY_CODE" --score 20 --sort rate --save /etc/pacman.d/mirrorlist; then
+            print_success "Mirrorlist updated"
+        else
+            print_error "Failed to update mirrorlist"
+        fi
+        
+        if run_with_spinner "Updating system and installing base packages..." bash -c "sudo pacman -Syu --noconfirm base-devel jq ripgrep python-pipx ansible zsh dysk zoxide yazi fastfetch file lsd fzf git github-cli lazygit wget curl bat btop ffmpeg cifs-utils tar unzip unrar unace bzip2 xz p7zip"; then
             print_success "System updated and base packages installed"
         else
             print_error "Failed to update system and install base packages"

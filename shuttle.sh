@@ -174,7 +174,11 @@ fi
 # Check if we can find a sudo group configuration to modify
 SUDO_CONFIGURED=false
 
-if sudo grep -q '^%wheel[[:space:]]\+ALL=(ALL:ALL)[[:space:]]\+ALL$' /etc/sudoers 2>/dev/null; then
+# Check if NOPASSWD is already configured
+if sudo grep -qE '^%(wheel|sudo)[[:space:]]+ALL=\(ALL(:ALL)?\)[[:space:]]+NOPASSWD:[[:space:]]+ALL$' /etc/sudoers 2>/dev/null; then
+    SUDO_CONFIGURED=true
+    print_success "Passwordless sudo already configured"
+elif sudo grep -q '^%wheel[[:space:]]\+ALL=(ALL:ALL)[[:space:]]\+ALL$' /etc/sudoers 2>/dev/null; then
     # Uncommented wheel line exists, modify it
     sudo sed -i 's/^%wheel[[:space:]]\+ALL=(ALL:ALL)[[:space:]]\+ALL$/%wheel ALL=(ALL:ALL) NOPASSWD: ALL/' /etc/sudoers 2>/dev/null
     SUDO_CONFIGURED=true
@@ -244,19 +248,23 @@ case $DISTRO in
             exit 1
         fi
 
-        if run_with_spinner "Installing GitHub CLI..." bash -c "sudo mkdir -p -m 755 /etc/apt/keyrings && out=\$(mktemp) && wget -nv -O\$out https://cli.github.com/packages/githubcli-archive-keyring.gpg && cat \$out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg >/dev/null && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg && sudo mkdir -p -m 755 /etc/apt/sources.list.d && echo \"deb [arch=\$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null && sudo apt update && sudo apt install gh -y"; then
+        if command -v gh >/dev/null 2>&1; then
+            print_success "GitHub CLI already installed"
+        elif run_with_spinner "Installing GitHub CLI..." bash -c "sudo mkdir -p -m 755 /etc/apt/keyrings && out=\$(mktemp) && wget -nv -O\$out https://cli.github.com/packages/githubcli-archive-keyring.gpg && cat \$out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg >/dev/null && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg && sudo mkdir -p -m 755 /etc/apt/sources.list.d && echo \"deb [arch=\$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null && sudo apt update && sudo apt install gh -y"; then
             print_success "GitHub CLI installed"
         else
             print_error "Failed to install GitHub CLI"
         fi
         
-        if run_with_spinner "Installing Docker..." bash -c "sudo apt update && sudo apt install ca-certificates curl -y && sudo install -m 0755 -d /etc/apt/keyrings && sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc && sudo chmod a+r /etc/apt/keyrings/docker.asc && printf 'Types: deb\\nURIs: https://download.docker.com/linux/debian\\nSuites: %s\\nComponents: stable\\nSigned-By: /etc/apt/keyrings/docker.asc\\n' \"\$(. /etc/os-release && echo \$VERSION_CODENAME)\" | sudo tee /etc/apt/sources.list.d/docker.sources >/dev/null && sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y && sudo usermod -aG docker $USER"; then
+        if run_with_spinner "Installing Docker..." bash -c "sudo apt update && sudo apt install ca-certificates curl -y && sudo install -m 0755 -d /etc/apt/keyrings && sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc && sudo chmod a+r /etc/apt/keyrings/docker.asc && printf 'Types: deb\\nURIs: https://download.docker.com/linux/debian\\nSuites: %s\\nComponents: stable\\nSigned-By: /etc/apt/keyrings/docker.asc\\n' \"\$(. /etc/os-release && echo \$VERSION_CODENAME)\" | sudo tee /etc/apt/sources.list.d/docker.sources >/dev/null && sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y && (groups | grep -q docker || sudo usermod -aG docker \$USER)"; then
             print_success "Docker installed and configured"
         else
             print_error "Failed to install Docker"
         fi
         
-        if run_with_spinner "Installing lazydocker..." bash -c "DIR=\"\$HOME/.local/bin\" && mkdir -p \"\$DIR\" && ARCH=\$(uname -m) && case \$ARCH in i386|i686) ARCH=x86 ;; armv6*) ARCH=armv6 ;; armv7*) ARCH=armv7 ;; aarch64*) ARCH=arm64 ;; esac && GITHUB_LATEST_VERSION=\$(curl -L -s -H 'Accept: application/json' https://github.com/jesseduffield/lazydocker/releases/latest | sed -e 's/.*\"tag_name\":\"\([^\"]*\)\".*/\1/') && GITHUB_FILE=\"lazydocker_\${GITHUB_LATEST_VERSION//v/}_\$(uname -s)_\${ARCH}.tar.gz\" && GITHUB_URL=\"https://github.com/jesseduffield/lazydocker/releases/download/\${GITHUB_LATEST_VERSION}/\${GITHUB_FILE}\" && cd /tmp && curl -L -o lazydocker.tar.gz \$GITHUB_URL && tar xzf lazydocker.tar.gz lazydocker && install -Dm 755 lazydocker -t \"\$DIR\" && rm lazydocker lazydocker.tar.gz && cd -"; then
+        if command -v lazydocker >/dev/null 2>&1 || [ -x "$HOME/.local/bin/lazydocker" ]; then
+            print_success "lazydocker already installed"
+        elif run_with_spinner "Installing lazydocker..." bash -c "DIR=\"\$HOME/.local/bin\" && mkdir -p \"\$DIR\" && ARCH=\$(uname -m) && case \$ARCH in i386|i686) ARCH=x86 ;; armv6*) ARCH=armv6 ;; armv7*) ARCH=armv7 ;; aarch64*) ARCH=arm64 ;; esac && GITHUB_LATEST_VERSION=\$(curl -L -s -H 'Accept: application/json' https://github.com/jesseduffield/lazydocker/releases/latest | sed -e 's/.*\"tag_name\":\"\([^\"]*\)\".*/\1/') && GITHUB_FILE=\"lazydocker_\${GITHUB_LATEST_VERSION//v/}_\$(uname -s)_\${ARCH}.tar.gz\" && GITHUB_URL=\"https://github.com/jesseduffield/lazydocker/releases/download/\${GITHUB_LATEST_VERSION}/\${GITHUB_FILE}\" && cd /tmp && curl -L -o lazydocker.tar.gz \$GITHUB_URL && tar xzf lazydocker.tar.gz lazydocker && install -Dm 755 lazydocker -t \"\$DIR\" && rm lazydocker lazydocker.tar.gz && cd -"; then
             print_success "lazydocker installed"
         else
             print_error "Failed to install lazydocker"
@@ -305,13 +313,15 @@ case $DISTRO in
             exit 1
         fi
         
-        if run_with_spinner "Installing yay AUR helper..." bash -c "rm -rf /tmp/yay && git clone https://aur.archlinux.org/yay.git /tmp/yay && cd /tmp/yay && makepkg -si --noconfirm --needed && cd -"; then
+        if command -v yay >/dev/null 2>&1; then
+            print_success "yay AUR helper already installed"
+        elif run_with_spinner "Installing yay AUR helper..." bash -c "rm -rf /tmp/yay && git clone https://aur.archlinux.org/yay.git /tmp/yay && cd /tmp/yay && makepkg -si --noconfirm --needed && cd -"; then
             print_success "yay AUR helper installed"
         else
             print_error "Failed to install yay AUR helper"
         fi
         
-        if run_with_spinner "Installing Docker..." bash -c "yay -S --noconfirm docker docker-compose docker-buildx lazydocker && sudo systemctl enable docker && sudo systemctl start docker && sudo usermod -aG docker $USER"; then
+        if run_with_spinner "Installing Docker..." bash -c "yay -S --noconfirm docker docker-compose docker-buildx lazydocker && sudo systemctl enable docker && sudo systemctl start docker && (groups | grep -q docker || sudo usermod -aG docker \$USER)"; then
             print_success "Docker installed and configured"
         else
             print_error "Failed to install Docker"

@@ -1,8 +1,8 @@
 <div align="center">
   <img src="https://i.imgur.com/E7QQ18h.png?raw=true" width="400" alt="shuttle"><br><br>
-  shuttle is a streamlined setup script that automatically configures a fresh installation with shell enhancements, essential development tools and server-focused packages.<br>
+  shuttle is a streamlined setup script that automatically configures a fresh linux install with shell enhancements, essential development tools and server-focused packages.<br>
   <br>
-  <b>Supports Debian and Arch Linux.</b>
+  <h3><b>Supports Debian and Arch Linux.</b></h3>
 </div>
 <br>
 
@@ -27,30 +27,30 @@ curl https://raw.githubusercontent.com/chriscorbell/shuttle/main/shuttle.sh | ba
 ### Base Packages
 - **Shell**: zsh with [my .zshrc](https://github.com/chriscorbell/dotfiles/blob/main/.zshrc) which includes [zinit](https://github.com/zdharma-continuum/zinit) with [starship](https://github.com/starship/starship), [atuin](https://github.com/atuinsh/atuin), syntax highlighting, completions, autosuggestions, fzf-tab, OMZ snippets, [aliases](#zsh-aliases) and [functions](#zsh-functions)
 - **Development**: base build tools, wget, curl
-- **Utilities**: pipx, [lsd](https://github.com/lsd-rs/lsd), fzf, zoxide, bat, btop, fastfetch
+- **Utilities**: [pipx](https://github.com/pypa/pipx), [lsd](https://github.com/lsd-rs/lsd), [fzf](https://github.com/junegunn/fzf), [zoxide](https://github.com/ajeetdsouza/zoxide), [file](https://github.com/file/file), [bat](https://github.com/sharkdp/bat), [dysk](https://github.com/Canop/dysk), [ripgrep](https://github.com/BurntSushi/ripgrep), [ffmpeg](https://github.com/FFmpeg/FFmpeg), cifs-utils, [btop](https://github.com/aristocratos/btop), [fastfetch](https://github.com/fastfetch-cli/fastfetch)
 - **Archive tools**: tar, unzip, unrar, unar, unace, bzip2, xz, 7zip (for [pack](#pack) and [extract](#extract) zsh functions)
-- **Git, GitHub CLI and [lazygit](https://github.com/jesseduffield/lazygit)**
-- **Docker, Docker Compose and [lazydocker](https://github.com/jesseduffield/lazydocker)**
-- **Terraform**
-- **Ansible**
+- **Git, [GitHub CLI](https://cli.github.com/) and [lazygit](https://github.com/jesseduffield/lazygit)**
+- **[Docker](https://docs.docker.com/engine/), [Docker Compose](https://docs.docker.com/compose/) and [lazydocker](https://github.com/jesseduffield/lazydocker)**
+- **[Terraform](https://developer.hashicorp.com/terraform/install)**
+- **[Ansible](https://github.com/ansible/ansible)**
 
 ### Distribution-Specific:
 
 Debian:
 - Enables non-free and contrib repositories
-- Installs nala frontend for apt
+- Installs [nala](https://github.com/volitank/nala) frontend for apt
 
 Arch:
-- Installs yay AUR helper
+- Installs [yay](https://github.com/Jguer/yay) AUR helper
 
 ## Post-Installation
 
 After the script completes:
 
 1. **Log out and log back in** for all changes to take effect
-2. Your default shell will be zsh with custom configuration
+2. Your default shell will be set to zsh and will automatically load its custom config
 3. Docker will be enabled and ready to use with your current non-root user (no sudo required)
-4. Installations are logged to `/tmp/shuttle-install-YYYYMMDD-HHMMSS.log`
+4. Installation logs are saved to `/tmp/shuttle-install-YYYYMMDD-HHMMSS.log`
 
 ## Customization
 
@@ -58,7 +58,7 @@ To use your own dotfiles repository, modify the clone command in the script with
 ```bash
 git clone https://github.com/your-username/your-dotfiles /tmp/dotfiles
 ```
-Your dotfiles repo needs to contain a `.zshrc` file and a `.config` directory.
+Your dotfiles repo needs to contain a `.zshrc` file and a `.config` directory at the root of the repository.
 
 ## ZSH Aliases
 
@@ -76,16 +76,16 @@ The following aliases are configured in the `.zshrc` file:
 | `gpl` | `git pull` | Pull from remote |
 | `ld` | `lazydocker` | Launch lazydocker TUI for Docker management |
 | `lg` | `lazygit` | Launch lazygit TUI for Git operations |
-| `up` | `sudo nala update && sudo nala full-upgrade -y` | Update and full upgrade (Debian) |
-| `in` | `sudo nala install` | Install package with `in <package>' (Debian) |
-| `un` | `sudo nala purge` | Remove package with `un <package>' (Debian) |
-| `cat` | `batcat --theme ansi -pp` | Replace cat with bat (Debian) |
-| `fzfp` | `fzf --preview='batcat --theme ansi -pp {}'` | fzf with bat preview (Debian) |
-| `up` | `yay -Syu` | Update and upgrade (Arch) |
-| `in` | `yay -S` | Install package with `in <package>' (Arch) |
-| `un` | `yay -Rns` | Remove package with `un <package>' (Arch) |
-| `cat` | `bat --theme ansi -pp` | Replace cat with bat (Arch) |
-| `fzfp` | `fzf --preview='bat --theme ansi -pp {}'` | fzf with bat preview (Arch) |
+| `up` | `sudo nala update && sudo nala full-upgrade -y` | Update and full upgrade **(Debian)** |
+| `in` | `sudo nala install` | Install package with `in <package>` **(Debian)** |
+| `un` | `sudo nala purge` | Remove package with `un <package>` **(Debian)** |
+| `cat` | `batcat --theme ansi -pp` | Replace cat with bat **(Debian)** |
+| `fzfp` | `fzf --preview='batcat --theme ansi -pp {}'` | fzf with bat preview **(Debian)** |
+| `up` | `yay -Syu` | Update and upgrade **(Arch)** |
+| `in` | `yay -S` | Install package with `in <package>` **(Arch)** |
+| `un` | `yay -Rns` | Remove package with `un <package>` **(Arch)** |
+| `cat` | `bat --theme ansi -pp` | Replace cat with bat **(Arch)** |
+| `fzfp` | `fzf --preview='bat --theme ansi -pp {}'` | fzf with bat preview **(Arch)** |
 
 ## ZSH Functions
 
@@ -96,7 +96,7 @@ Git add, commit, and push in one command. Automatically pushes to the current br
 
 **Example:**
 ```bash
-gacp "Fixed bug in authentication"
+gacp "Fixed auth bug"
 ```
 
 ### extract
@@ -136,5 +136,5 @@ Create archives in various formats from files or directories.
 **Example:**
 ```bash
 pack txz myproject
-# Creates: myproject.tar.xz
+# Creates archive file "myproject.tar.xz"
 ```

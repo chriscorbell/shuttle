@@ -306,7 +306,7 @@ case $DISTRO in
             print_error "Failed to update mirrorlist"
         fi
         
-        if run_with_spinner "Updating system and installing base packages..." bash -c "sudo pacman -Syu --noconfirm base-devel jq ripgrep python-pipx ansible zsh dysk zoxide yazi fastfetch file lsd fzf git github-cli lazygit wget curl bat btop ffmpeg cifs-utils tar unzip unrar unace bzip2 xz p7zip"; then
+        if run_with_spinner "Updating system and installing base packages..." bash -c "sudo pacman -Syu --noconfirm base-devel jq ripgrep python-pipx ansible terraform zsh dysk zoxide yazi fastfetch file lsd fzf git github-cli lazygit wget curl bat btop ffmpeg cifs-utils tar unzip unrar unace bzip2 xz p7zip"; then
             print_success "System updated and base packages installed"
         else
             print_error "Failed to update system and install base packages"

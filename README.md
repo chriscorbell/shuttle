@@ -11,12 +11,11 @@
 ```bash
 git clone https://github.com/chriscorbell/shuttle.git
 cd shuttle
-chmod +x shuttle.sh
 ./shuttle.sh
 ```
-Or alternatively, curl-pipe into bash (don't forget to always read and verify the source before doing so):
+Or alternatively, use this one-liner for fresh installations that don't yet have git installed (don't forget to always read and verify the source before doing so):
 ```
-curl https://raw.githubusercontent.com/chriscorbell/shuttle/main/shuttle.sh | bash
+curl https://raw.githubusercontent.com/chriscorbell/shuttle/main/shuttle.sh >> shuttle.sh && chmod +x shuttle.sh && ./shuttle.sh
 ```
 
 ## What it Installs

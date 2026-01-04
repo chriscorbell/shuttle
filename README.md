@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://i.imgur.com/E7QQ18h.png?raw=true" width="400" alt="shuttle"><br><br>
-  shuttle is a streamlined setup script that automatically configures a fresh linux install with shell enhancements, essential development tools and server-focused packages.<br>
+  shuttle is an idempotent setup script that automatically configures a fresh Arch or Debian linux installation with shell enhancements, essential development tools and server-focused packages.<br>
   <br>
   <h3><b>Supports Debian and Arch Linux.</b></h3>
 </div>
@@ -27,7 +27,7 @@ curl https://raw.githubusercontent.com/chriscorbell/shuttle/main/shuttle.sh | ba
 ### Base Packages
 - **Shell**: zsh with [my .zshrc](https://github.com/chriscorbell/dotfiles/blob/main/.zshrc) which includes [zinit](https://github.com/zdharma-continuum/zinit) with [starship](https://github.com/starship/starship), [atuin](https://github.com/atuinsh/atuin), syntax highlighting, completions, autosuggestions, fzf-tab, OMZ snippets, [aliases](#zsh-aliases) and [functions](#zsh-functions)
 - **Development**: base build tools, wget, curl
-- **Utilities**: [pipx](https://github.com/pypa/pipx), [lsd](https://github.com/lsd-rs/lsd), [fzf](https://github.com/junegunn/fzf), [zoxide](https://github.com/ajeetdsouza/zoxide), [file](https://github.com/file/file), [bat](https://github.com/sharkdp/bat), [dysk](https://github.com/Canop/dysk), [ripgrep](https://github.com/BurntSushi/ripgrep), [ffmpeg](https://github.com/FFmpeg/FFmpeg), cifs-utils, [btop](https://github.com/aristocratos/btop), [fastfetch](https://github.com/fastfetch-cli/fastfetch)
+- **Utilities**: [pipx](https://github.com/pypa/pipx), [lsd](https://github.com/lsd-rs/lsd), [fzf](https://github.com/junegunn/fzf), [zoxide](https://github.com/ajeetdsouza/zoxide), [file](https://github.com/file/file), [bat](https://github.com/sharkdp/bat), [dysk](https://github.com/Canop/dysk), [ripgrep](https://github.com/BurntSushi/ripgrep), [ffmpeg](https://github.com/FFmpeg/FFmpeg), [cifs-utils](https://wiki.samba.org/index.php/LinuxCIFS_utils), [btop](https://github.com/aristocratos/btop), [fastfetch](https://github.com/fastfetch-cli/fastfetch), [ncdu](https://code.blicky.net/yorhel/ncdu), [duf](https://github.com/muesli/duf), [progress](https://github.com/Xfennec/progress), [lsof](https://github.com/lsof-org/lsof), [magic-wormhole](https://github.com/magic-wormhole/magic-wormhole), [rsync](https://github.com/RsyncProject/rsync), [moreutils](https://joeyh.name/code/moreutils/)
 - **Archive tools**: tar, unzip, unrar, unar, unace, bzip2, xz, 7zip (for [pack](#pack) and [extract](#extract) zsh functions)
 - **Git, [GitHub CLI](https://cli.github.com/) and [lazygit](https://github.com/jesseduffield/lazygit)**
 - **[Docker](https://docs.docker.com/engine/), [Docker Compose](https://docs.docker.com/compose/) and [lazydocker](https://github.com/jesseduffield/lazydocker)**

@@ -181,7 +181,7 @@ case $DISTRO in
         
         if command -v docker; then
             print_success "Docker already installed"
-        elif print_step "Installing Docker..." && bash -c "sudo apt update && sudo apt install ca-certificates curl -y && sudo install -m 0755 -d /etc/apt/keyrings && sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc && sudo chmod a+r /etc/apt/keyrings/docker.asc && printf 'Types: deb\\nURIs: https://download.docker.com/linux/debian\\nSuites: %s\\nComponents: stable\\nSigned-By: /etc/apt/keyrings/docker.asc\\n' \"\$(. /etc/os-release && echo \$VERSION_CODENAME)\" | sudo tee /etc/apt/sources.list.d/docker.sources && sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-model-plugin -y && (getent group docker | grep -q \$USER || sudo usermod -aG docker \$USER)"; then
+        elif print_step "Installing Docker..." && bash -c "sudo apt update && sudo apt install ca-certificates curl -y && sudo install -m 0755 -d /etc/apt/keyrings && sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc && sudo chmod a+r /etc/apt/keyrings/docker.asc && printf 'Types: deb\\nURIs: https://download.docker.com/linux/debian\\nSuites: %s\\nComponents: stable\\nSigned-By: /etc/apt/keyrings/docker.asc\\n' \"\$(. /etc/os-release && echo \$VERSION_CODENAME)\" | sudo tee /etc/apt/sources.list.d/docker.sources && sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y && (getent group docker | grep -q \$USER || sudo usermod -aG docker \$USER)"; then
             print_success "Docker installed and configured"
         else
             print_error "Failed to install Docker"
@@ -273,7 +273,7 @@ case $DISTRO in
         
         if command -v docker; then
             print_success "Docker already installed"
-        elif print_step "Installing Docker..." && bash -c "yay -S --needed --noconfirm docker docker-compose docker-buildx docker-model-bin lazydocker && sudo systemctl enable docker && sudo systemctl start docker && (getent group docker | grep -q \$USER || sudo usermod -aG docker \$USER)"; then
+        elif print_step "Installing Docker..." && bash -c "yay -S --needed --noconfirm docker docker-compose docker-buildx lazydocker && sudo systemctl enable docker && sudo systemctl start docker && (getent group docker | grep -q \$USER || sudo usermod -aG docker \$USER)"; then
             print_success "Docker installed and configured"
         else
             print_error "Failed to install Docker"

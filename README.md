@@ -30,8 +30,6 @@ curl https://raw.githubusercontent.com/chriscorbell/shuttle/main/shuttle.sh >> s
 - **Archive tools**: tar, unzip, unrar, unar, unace, bzip2, xz, 7zip (for [pack](#pack) and [extract](#extract) zsh functions)
 - **Git, [GitHub CLI](https://cli.github.com/) and [lazygit](https://github.com/jesseduffield/lazygit)**
 - **[Docker](https://docs.docker.com/engine/), [Docker Compose](https://docs.docker.com/compose/) and [lazydocker](https://github.com/jesseduffield/lazydocker)**
-- **[Terraform](https://developer.hashicorp.com/terraform/install)**
-- **[Ansible](https://github.com/ansible/ansible)**
 
 ### Distribution-Specific:
 

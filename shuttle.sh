@@ -66,7 +66,7 @@ cat << "EOF"
    ██▀ ▀██    ▄█▀▀▀ ████▄ ██ ██ ▀██▀▀ ▀██▀▀ ██ ▄█▀█▄
   ████▄████   ▀███▄ ██ ██ ██ ██  ██    ██   ██ ██▄█▀
   █▀ ▄▄▄ ▀█   ▄▄▄█▀ ██ ██ ▀██▀█  ██    ██   ██ ▀█▄▄▄
-     ▀█▀    
+     ▀█▀
 
 EOF
 echo -e "${NOCOLOR}"
@@ -132,7 +132,7 @@ if [ "$SUDO_CONFIGURED" = "true" ]; then
         print_error "Sudoers file has syntax errors - aborting to prevent lockout"
         exit 1
     fi
-    
+
     # Only remove sudoers.d files that might conflict with passwordless sudo
     if [ -d /etc/sudoers.d ]; then
         REMOVED_COUNT=0
@@ -161,9 +161,9 @@ case $DISTRO in
         sudo sed -i '/^deb-src / { /non-free[^-]/! s/\(main\|contrib\)\([^n]\|$\)/\1 non-free\2/ }' /etc/apt/sources.list
         sudo apt update
         print_success "Repositories configured"
-        
+
         print_step "Upgrading system and installing base packages..."
-        if bash -c "sudo apt update && sudo apt full-upgrade -y && sudo apt install build-essential jq ripgrep gnupg2 pipx ansible zsh dysk zoxide fastfetch nala file lsd fzf git lazygit wget curl bat btop ffmpeg cifs-utils tar unzip unrar unar unace bzip2 xz-utils 7zip which ncdu duf progress lsof wormhole rsync moreutils unp bsdextrautils -y && (command -v tldr >/dev/null 2>&1 || pipx install tldr)"; then
+        if bash -c "sudo apt update && sudo apt full-upgrade -y && sudo apt install build-essential jq ripgrep gnupg2 pipx zsh dysk zoxide fastfetch nala file lsd fzf git lazygit wget curl bat btop ffmpeg cifs-utils tar unzip unrar unar unace bzip2 xz-utils 7zip which ncdu duf progress lsof wormhole rsync moreutils unp bsdextrautils -y && (command -v tldr >/dev/null 2>&1 || pipx install tldr)"; then
             print_success "System upgraded and base packages installed"
         else
             print_error "Failed to upgrade system and install base packages"
@@ -178,7 +178,7 @@ case $DISTRO in
             print_error "Failed to install GitHub CLI"
             exit 1
         fi
-        
+
         if command -v docker; then
             print_success "Docker already installed"
         elif print_step "Installing Docker..." && bash -c "sudo apt update && sudo apt install ca-certificates curl -y && sudo install -m 0755 -d /etc/apt/keyrings && sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc && sudo chmod a+r /etc/apt/keyrings/docker.asc && printf 'Types: deb\\nURIs: https://download.docker.com/linux/debian\\nSuites: %s\\nComponents: stable\\nSigned-By: /etc/apt/keyrings/docker.asc\\n' \"\$(. /etc/os-release && echo \$VERSION_CODENAME)\" | sudo tee /etc/apt/sources.list.d/docker.sources && sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y && (getent group docker | grep -q \$USER || sudo usermod -aG docker \$USER)"; then
@@ -187,7 +187,7 @@ case $DISTRO in
             print_error "Failed to install Docker"
             exit 1
         fi
-        
+
         if command -v lazydocker || [ -x "$HOME/.local/bin/lazydocker" ]; then
             print_success "lazydocker already installed"
         elif print_step "Installing lazydocker..." && bash -c "DIR=\"\$HOME/.local/bin\" && mkdir -p \"\$DIR\" && ARCH=\$(uname -m) && case \$ARCH in i386|i686) ARCH=x86 ;; armv6*) ARCH=armv6 ;; armv7*) ARCH=armv7 ;; aarch64*) ARCH=arm64 ;; esac && GITHUB_LATEST_VERSION=\$(curl -L -s -H 'Accept: application/json' https://github.com/jesseduffield/lazydocker/releases/latest | sed -e 's/.*\"tag_name\":\"\([^\"]*\)\".*/\1/') && GITHUB_FILE=\"lazydocker_\${GITHUB_LATEST_VERSION//v/}_\$(uname -s)_\${ARCH}.tar.gz\" && GITHUB_URL=\"https://github.com/jesseduffield/lazydocker/releases/download/\${GITHUB_LATEST_VERSION}/\${GITHUB_FILE}\" && cd /tmp && curl -L -o lazydocker.tar.gz \$GITHUB_URL && tar xzf lazydocker.tar.gz lazydocker && install -Dm 755 lazydocker -t \"\$DIR\" && rm lazydocker lazydocker.tar.gz && cd -"; then
@@ -196,17 +196,8 @@ case $DISTRO in
             print_error "Failed to install lazydocker"
             exit 1
         fi
-        
-        if command -v terraform; then
-            print_success "Terraform already installed"
-        elif print_step "Installing Terraform..." && bash -c "if [ ! -f /usr/share/keyrings/hashicorp-archive-keyring.gpg ]; then wget -qO- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg; fi && if [ ! -f /etc/apt/sources.list.d/hashicorp.list ]; then echo \"deb [arch=\$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com \$(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main\" | sudo tee /etc/apt/sources.list.d/hashicorp.list; fi && sudo apt update && sudo apt install terraform -y"; then
-            print_success "Terraform installed"
-        else
-            print_error "Failed to install Terraform"
-            exit 1
-        fi
         ;;
-        
+
     arch)
         print_step "Configuring pacman..."
         # Enable Color if commented
@@ -228,14 +219,14 @@ case $DISTRO in
             sudo sed -i '/^VerbosePkgLists/a ILoveCandy' /etc/pacman.conf
         fi
         print_success "Pacman configured"
-        
+
         if print_step "Installing reflector..." && bash -c "sudo pacman -Sy --needed --noconfirm reflector rsync"; then
             print_success "Reflector installed"
         else
             print_error "Failed to install reflector"
             exit 1
         fi
-        
+
         COUNTRY_CODE=$(locale | grep -oP '^LC_TIME=.*_\K[A-Z]{2}' | head -1)
         if [ -z "$COUNTRY_CODE" ]; then
             COUNTRY_CODE=$(locale | grep -oP '^LANG=.*_\K[A-Z]{2}' | head -1)
@@ -254,14 +245,14 @@ case $DISTRO in
         else
             print_success "Mirrorlist recently updated by reflector, skipping"
         fi
-        
+
         if print_step "Updating system and installing base packages..." && bash -c "sudo pacman -Syu --needed --noconfirm base-devel jq ripgrep python-pipx ansible terraform zsh dysk zoxide yazi fastfetch file lsd fzf git github-cli lazygit wget curl bat btop ffmpeg cifs-utils tar unzip unrar unace bzip2 xz p7zip ncdu duf progress lsof magic-wormhole rsync rustup moreutils unp"; then
             print_success "System updated and base packages installed"
         else
             print_error "Failed to update system and install base packages"
             exit 1
         fi
-        
+
         if command -v yay; then
             print_success "yay AUR helper already installed"
         elif print_step "Installing yay AUR helper..." && bash -c "rm -rf /tmp/yay && git clone https://aur.archlinux.org/yay.git /tmp/yay && cd /tmp/yay && makepkg -si --noconfirm --needed && cd -"; then
@@ -270,7 +261,7 @@ case $DISTRO in
             print_error "Failed to install yay AUR helper"
             exit 1
         fi
-        
+
         if command -v docker; then
             print_success "Docker already installed"
         elif print_step "Installing Docker..." && bash -c "yay -S --needed --noconfirm docker docker-compose docker-buildx lazydocker && sudo systemctl enable docker && sudo systemctl start docker && (getent group docker | grep -q \$USER || sudo usermod -aG docker \$USER)"; then
@@ -280,7 +271,7 @@ case $DISTRO in
             exit 1
         fi
         ;;
-        
+
     *)
         print_error "Unsupported distribution: $DISTRO"
         exit 1
@@ -311,7 +302,7 @@ if [ -f /etc/pam.d/chsh ]; then
     elif groups | grep -q '\bsudo\b'; then
         PAM_GROUP="sudo"
     fi
-    
+
     if [ -n "$PAM_GROUP" ]; then
         # Check if the exact configuration already exists
         if ! grep -q "pam_wheel.so trust group=$PAM_GROUP" /etc/pam.d/chsh; then
@@ -343,7 +334,7 @@ cat << "EOF"
    ██▀ ▀██    ▄█▀▀▀ ████▄ ██ ██ ▀██▀▀ ▀██▀▀ ██ ▄█▀█▄
   ████▄████   ▀███▄ ██ ██ ██ ██  ██    ██   ██ ██▄█▀
   █▀ ▄▄▄ ▀█   ▄▄▄█▀ ██ ██ ▀██▀█  ██    ██   ██ ▀█▄▄▄
-     ▀█▀    
+     ▀█▀
 
 EOF
 echo -e "${NOCOLOR}"

@@ -1,8 +1,8 @@
 <div align="center">
   <img src="https://i.imgur.com/E7QQ18h.png?raw=true" width="400" alt="shuttle"><br><br>
-  shuttle is an idempotent setup script that automatically configures a fresh Arch or Debian linux installation with shell enhancements, essential development tools and server-focused packages.<br>
+  shuttle is an idempotent setup script that automatically configures a fresh Arch, Debian, or Ubuntu Server installation with shell enhancements, essential development tools and server-focused packages.<br>
   <br>
-  <h3><b>Supports Debian and Arch Linux.</b></h3>
+  <h3><b>Supports Ubuntu Server, Debian and Arch Linux.</b></h3>
 </div>
 <br>
 

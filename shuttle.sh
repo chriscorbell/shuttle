@@ -198,6 +198,82 @@ case $DISTRO in
         fi
         ;;
 
+    ubuntu)
+        print_step "Preparing APT repositories for Ubuntu..."
+
+        # Many Ubuntu Server images don't have Universe enabled by default; enable it when possible.
+        if bash -c "sudo apt update && sudo apt install -y software-properties-common"; then
+            if command -v add-apt-repository >/dev/null 2>&1; then
+                sudo add-apt-repository -y universe >/dev/null 2>&1 || true
+            fi
+            sudo apt update
+            print_success "Repositories configured"
+        else
+            print_error "Failed to prepare APT repositories"
+            exit 1
+        fi
+
+        print_step "Upgrading system and installing base packages..."
+        # Prefer packages available on Ubuntu Server. Keep some tools optional.
+        if bash -c "sudo apt update && sudo apt full-upgrade -y && sudo apt install -y build-essential jq ripgrep gnupg2 pipx zsh zoxide file fzf git wget curl bat btop ffmpeg cifs-utils tar unzip bzip2 xz-utils p7zip-full which ncdu duf progress lsof rsync moreutils bsdextrautils && (command -v tldr >/dev/null 2>&1 || pipx install tldr)"; then
+            # Optional packages (repo availability can vary by image/release)
+            # Note: Ubuntu 24.04 default repos do not include dysk or fastfetch.
+            for pkg in lsd nala unp unace unar unrar unrar-free 7zip magic-wormhole; do
+                if apt-cache show "$pkg" >/dev/null 2>&1; then
+                    sudo apt install -y "$pkg" >/dev/null 2>&1 || true
+                fi
+            done
+            print_success "System upgraded and base packages installed"
+        else
+            print_error "Failed to upgrade system and install base packages"
+            exit 1
+        fi
+
+        if command -v dysk >/dev/null 2>&1; then
+            print_success "dysk already installed"
+        else
+            print_step "Installing dysk (via cargo)..."
+            # Ensure cargo + common native build dependencies are present.
+            if bash -c "sudo apt update && sudo apt install -y cargo rustc pkg-config libssl-dev"; then
+                export PATH="$HOME/.cargo/bin:$PATH"
+                if bash -c "cargo install --locked dysk"; then
+                    print_success "dysk installed"
+                else
+                    print_error "Failed to install dysk via cargo (continuing)"
+                fi
+            else
+                print_error "Failed to install cargo dependencies for dysk (continuing)"
+            fi
+        fi
+
+        if command -v gh; then
+            print_success "GitHub CLI already installed"
+        elif print_step "Installing GitHub CLI..." && bash -c "sudo mkdir -p -m 755 /etc/apt/keyrings && if [ ! -f /etc/apt/keyrings/githubcli-archive-keyring.gpg ]; then out=\$(mktemp) && wget -nv -O\$out https://cli.github.com/packages/githubcli-archive-keyring.gpg && cat \$out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg; fi && sudo mkdir -p -m 755 /etc/apt/sources.list.d && if [ ! -f /etc/apt/sources.list.d/github-cli.list ]; then echo \"deb [arch=\$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\" | sudo tee /etc/apt/sources.list.d/github-cli.list; fi && sudo apt update && sudo apt install gh -y"; then
+            print_success "GitHub CLI installed"
+        else
+            print_error "Failed to install GitHub CLI"
+            exit 1
+        fi
+
+        if command -v docker; then
+            print_success "Docker already installed"
+        elif print_step "Installing Docker..." && bash -c "sudo apt update && sudo apt install ca-certificates curl -y && sudo install -m 0755 -d /etc/apt/keyrings && sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc && sudo chmod a+r /etc/apt/keyrings/docker.asc && printf 'Types: deb\\nURIs: https://download.docker.com/linux/ubuntu\\nSuites: %s\\nComponents: stable\\nSigned-By: /etc/apt/keyrings/docker.asc\\n' \"\$(. /etc/os-release && echo \${UBUNTU_CODENAME:-\$VERSION_CODENAME})\" | sudo tee /etc/apt/sources.list.d/docker.sources && sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y && (getent group docker | grep -q \$USER || sudo usermod -aG docker \$USER)"; then
+            print_success "Docker installed and configured"
+        else
+            print_error "Failed to install Docker"
+            exit 1
+        fi
+
+        if command -v lazydocker || [ -x "$HOME/.local/bin/lazydocker" ]; then
+            print_success "lazydocker already installed"
+        elif print_step "Installing lazydocker..." && bash -c "DIR=\"\$HOME/.local/bin\" && mkdir -p \"\$DIR\" && ARCH=\$(uname -m) && case \$ARCH in i386|i686) ARCH=x86 ;; armv6*) ARCH=armv6 ;; armv7*) ARCH=armv7 ;; aarch64*) ARCH=arm64 ;; esac && GITHUB_LATEST_VERSION=\$(curl -L -s -H 'Accept: application/json' https://github.com/jesseduffield/lazydocker/releases/latest | sed -e 's/.*\"tag_name\":\"\([^\"]*\)\".*/\1/') && GITHUB_FILE=\"lazydocker_\${GITHUB_LATEST_VERSION//v/}_\$(uname -s)_\${ARCH}.tar.gz\" && GITHUB_URL=\"https://github.com/jesseduffield/lazydocker/releases/download/\${GITHUB_LATEST_VERSION}/\${GITHUB_FILE}\" && cd /tmp && curl -L -o lazydocker.tar.gz \$GITHUB_URL && tar xzf lazydocker.tar.gz lazydocker && install -Dm 755 lazydocker -t \"\$DIR\" && rm lazydocker lazydocker.tar.gz && cd -"; then
+            print_success "lazydocker installed"
+        else
+            print_error "Failed to install lazydocker"
+            exit 1
+        fi
+        ;;
+
     arch)
         print_step "Configuring pacman..."
         # Enable Color if commented
